@@ -2,8 +2,7 @@ import streamlit as st
 import numpy as np
 from pandas import DataFrame
 from keybert import KeyBERT
-# For Flair (Keybert)
-from flair.embeddings import TransformerDocumentEmbeddings
+from keyphrase_vectorizers import KeyphraseCountVectorizer
 import seaborn as sns
 # For download buttons
 from functionforDownloadButtons import download_button
@@ -11,7 +10,7 @@ import os
 import json
 
 st.set_page_config(
-    page_title="BERT Keyword Extractor",
+    page_title="Patent Keyword Extractor",
     page_icon="🎈",
 )
 
@@ -36,7 +35,7 @@ c30, c31, c32 = st.columns([2.5, 1, 3])
 
 with c30:
     # st.image("logo.png", width=400)
-    st.title("🔑 BERT Keyword Extractor")
+    st.title("🔑 Patent Keyword Extractor")
     st.header("")
 
 
@@ -45,9 +44,7 @@ with st.expander("ℹ️ - About this app", expanded=True):
 
     st.write(
         """     
--   The *BERT Keyword Extractor* app is an easy-to-use interface built in Streamlit for the amazing [KeyBERT](https://github.com/MaartenGr/KeyBERT) library from Maarten Grootendorst!
--   It uses a minimal keyword extraction technique that leverages multiple NLP embeddings and relies on [Transformers] (https://huggingface.co/transformers/) 🤗 to create keywords/keyphrases that are most similar to a document.
-	    """
+-   The *Patent Keyword Extractor* is using KeyBERT with PatentsBERT   """
     )
 
     st.markdown("")
@@ -60,38 +57,29 @@ with st.form(key="my_form"):
     ce, c1, ce, c2, c3 = st.columns([0.07, 1, 0.07, 5, 0.07])
     with c1:
         ModelType = st.radio(
-            "Choose your model",
-            ["DistilBERT (Default)", "Flair"],
-            help="At present, you can choose between 2 models (Flair or DistilBERT) to embed your text. More to come!",
+            "Initiating model",
+            ["PatentkeyBERT"],
+            help="At present we have PatentkeyBERT Model running!",
         )
 
-        if ModelType == "Default (DistilBERT)":
-            # kw_model = KeyBERT(model=roberta)
+        if ModelType == "PatentkeyBERT":
 
             @st.cache(allow_output_mutation=True)
-            def load_model():
-                return KeyBERT(model=roberta)
-
-            kw_model = load_model()
-
-        else:
-            @st.cache(allow_output_mutation=True)
-            def load_model():
-                return KeyBERT("distilbert-base-nli-mean-tokens")
-
-            kw_model = load_model()
+	    	def load_model():
+		  model = KeyBERT("AI-Growth-Lab/PatentSBERTa")
+		  return model
 
         top_N = st.slider(
             "# of results",
-            min_value=1,
-            max_value=30,
-            value=10,
-            help="You can choose the number of keywords/keyphrases to display. Between 1 and 30, default number is 10.",
+            min_value=5,
+            max_value=50,
+            value=50,
+            help="You can choose the number of keywords/keyphrases to display. Between 5 and 50, default number is 50.",
         )
         min_Ngrams = st.number_input(
             "Minimum Ngram",
             min_value=1,
-            max_value=4,
+            max_value=3,
             help="""The minimum value for the ngram range.
 *Keyphrase_ngram_range* sets the length of the resulting keywords/keyphrases.
 To extract keyphrases, simply set *keyphrase_ngram_range* to (1, 2) or higher depending on the number of words you would like in the resulting keyphrases.""",
@@ -100,12 +88,12 @@ To extract keyphrases, simply set *keyphrase_ngram_range* to (1, 2) or higher de
 
         max_Ngrams = st.number_input(
             "Maximum Ngram",
-            value=2,
+            value=3,
             min_value=1,
-            max_value=4,
+            max_value=3,
             help="""The maximum value for the keyphrase_ngram_range.
 *Keyphrase_ngram_range* sets the length of the resulting keywords/keyphrases.
-To extract keyphrases, simply set *keyphrase_ngram_range* to (1, 2) or higher depending on the number of words you would like in the resulting keyphrases.""",
+To extract keyphrases, simply set *keyphrase_ngram_range* to (1, 3) or higher depending on the number of words you would like in the resulting keyphrases.""",
         )
 
         StopWordsCheckbox = st.checkbox(
@@ -133,11 +121,11 @@ Note that the *Keyword diversity* slider only works if the *MMR* checkbox is tic
 
     with c2:
         doc = st.text_area(
-            "Paste your text below (max 500 words)",
-            height=510,
+            "Paste your text below (max 4000 words)",
+            height=610,
         )
 
-        MAX_WORDS = 500
+        MAX_WORDS = 4000
         import re
         res = len(re.findall(r"\w+", doc))
         if res > MAX_WORDS:
@@ -145,12 +133,12 @@ Note that the *Keyword diversity* slider only works if the *MMR* checkbox is tic
                 "⚠️ Your text contains "
                 + str(res)
                 + " words."
-                + " Only the first 500 words will be reviewed. Stay tuned as increased allowance is coming! 😊"
+                + " Only the first 4000 words will be reviewed. Stay tuned as increased allowance is coming! 😊"
             )
 
             doc = doc[:MAX_WORDS]
 
-        submit_button = st.form_submit_button(label="✨ Get me the data!")
+        submit_button = st.form_submit_button(label="✨ Extract Keywords!")
 
     if use_MMR:
         mmr = True
@@ -172,10 +160,11 @@ if min_Ngrams > max_Ngrams:
 keywords = kw_model.extract_keywords(
     doc,
     keyphrase_ngram_range=(min_Ngrams, max_Ngrams),
-    use_mmr=mmr,
+    #use_mmr=mmr,
     stop_words=StopWords,
+    vectorizer=KeyphraseCountVectorizer(),
     top_n=top_N,
-    diversity=Diversity,
+    #diversity=Diversity,
 )
 
 st.markdown("## **🎈 Check & download results **")
@@ -207,14 +196,14 @@ cmRed = sns.light_palette("red", as_cmap=True)
 df = df.style.background_gradient(
     cmap=cmGreen,
     subset=[
-        "Relevancy",
+        "Score",
     ],
 )
 
 c1, c2, c3 = st.columns([1, 3, 1])
 
 format_dictionary = {
-    "Relevancy": "{:.1%}",
+    "Score": "{:.1%}",
 }
 
 df = df.format(format_dictionary)
