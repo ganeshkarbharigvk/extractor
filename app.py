@@ -48,7 +48,7 @@ with st.form(key="my_form"):
     with c1:
         ModelType = st.radio(
             "Model",
-            ["Patent-Key-BERT(Default)"],
+            ["PatentKeyBERT"],
             help="At present, you can choose  AI-Growth-Lab/PatentSBERTa to embed your text. More to come!",
         )
 
