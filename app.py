@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 from pandas import DataFrame
 from keybert import KeyBERT
+from keyphrase_vectorizers import KeyphraseCountVectorizer
 # For Flair (Keybert)
 from flair.embeddings import TransformerDocumentEmbeddings
 import seaborn as sns
@@ -11,7 +12,7 @@ import os
 import json
 
 st.set_page_config(
-    page_title="BERT Keyword Extractor",
+    page_title="Patent Keyword Extractor",
     page_icon="🎈",
 )
 
@@ -36,7 +37,7 @@ c30, c31, c32 = st.columns([2.5, 1, 3])
 
 with c30:
     # st.image("logo.png", width=400)
-    st.title("🔑 BERT Keyword Extractor")
+    st.title("🔑 Patent Keyword Extractor")
     st.header("")
 
 
@@ -61,8 +62,8 @@ with st.form(key="my_form"):
     with c1:
         ModelType = st.radio(
             "Choose your model",
-            ["DistilBERT (Default)", "Flair"],
-            help="At present, you can choose between 2 models (Flair or DistilBERT) to embed your text. More to come!",
+            ["AI-Growth-Lab/PatentSBERTa (Default)", "Flair"],
+            help="At present, you can choose between 2 models (Flair or AI-Growth-Lab/PatentSBERTa) to embed your text. More to come!",
         )
 
         if ModelType == "Default (AI-Growth-Lab/PatentSBERTa)":
@@ -176,6 +177,7 @@ keywords = kw_model.extract_keywords(
     stop_words=StopWords,
     top_n=top_N,
     diversity=Diversity,
+    vectorizer=KeyphraseCountVectorizer(),
 )
 
 st.markdown("## **🎈 Check & download results **")
