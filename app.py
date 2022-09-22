@@ -62,7 +62,7 @@ with st.form(key="my_form"):
             def load_model():
                 return KeyBERT(model=roberta)
 
-            kw_model = load_model()
+       kw_model = load_model()
 
 
         top_N = st.slider(
