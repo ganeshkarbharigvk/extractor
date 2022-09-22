@@ -37,9 +37,9 @@ c30, c31, c32 = st.columns([1, 1, 2])
 
 with c30:
     # st.image("logo.png", width=500)
-    #st.title("Patent Keyword Extractor")
+    st.title("Patent Keyword Extractor")
     #st.header("")
-st.markdown("")
+#st.markdown("")
 st.markdown("## **📌 Patent Keyword Extractor**")
 with st.form(key="my_form"):
 
