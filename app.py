@@ -54,20 +54,12 @@ st.markdown("## **📌 Paste document **")
 with st.form(key="my_form"):
 
 
-    ce, c1, ce, c2, c3 = st.columns([0.07, 1, 0.07, 5, 0.07])
+    ce, c2, c3 = st.columns([0.07, 5, 0.07])
     with c1:
-        ModelType = st.radio(
-            "Initiating model",
-            ["PatentkeyBERT"],
-            help="At present we have PatentkeyBERT Model running!",
-        )
 
-        if ModelType == "PatentkeyBERT":
-
-            @st.cache(allow_output_mutation=True)
-	    	def load_model():
-		  model = KeyBERT("AI-Growth-Lab/PatentSBERTa")
-		  return model
+	def load_model():
+	      model = KeyBERT("AI-Growth-Lab/PatentSBERTa")
+	      return model
 
         top_N = st.slider(
             "# of results",
