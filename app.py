@@ -18,7 +18,7 @@ st.set_page_config(
 
 
 def _max_width_():
-    max_width_str = f"max-width: 1000px;"
+    max_width_str = f"max-width: 1400px;"
     st.markdown(
         f"""
     <style>
@@ -33,10 +33,10 @@ def _max_width_():
 
 _max_width_()
 
-c30, c31, c32 = st.columns([2, 1, 2])
+c30, c31, c32 = st.columns([2.5, 1, 2])
 
 with c30:
-    # st.image("logo.png", width=400)
+    # st.image("logo.png", width=500)
     st.title("Patent Keyword Extractor")
     st.header("")
 
@@ -51,7 +51,7 @@ with st.form(key="my_form"):
     with c1:
         ModelType = st.radio(
             "Model",
-            ["AI-Growth-Lab/PatentSBERTa (Default)"],
+            ["Patent-Key-BERT(Default)"],
             help="At present, you can choose  AI-Growth-Lab/PatentSBERTa to embed your text. More to come!",
         )
 
