@@ -56,13 +56,20 @@ with st.form(key="my_form"):
         )
 
         if ModelType == "Default (AI-Growth-Lab/PatentSBERTa)":
-            # kw_model = KeyBERT(model="AI-Growth-Lab/PatentSBERTa")
+            # kw_model = KeyBERT(model=AI-Growth-Lab/PatentSBERTa)
 
             @st.cache(allow_output_mutation=True)
             def load_model():
                 return KeyBERT(model=roberta)
 
-       kw_model = load_model()
+            kw_model = load_model()
+
+        else:
+            @st.cache(allow_output_mutation=True)
+            def load_model():
+                return KeyBERT("AI-Growth-Lab/PatentSBERTa")
+
+            kw_model = load_model()
 
 
         top_N = st.slider(
