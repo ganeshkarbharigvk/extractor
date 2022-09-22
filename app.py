@@ -13,12 +13,12 @@ import json
 
 st.set_page_config(
     page_title="Patent Keyword Extractor",
-    page_icon="🎈",
+    page_icon="🔑 ",
 )
 
 
 def _max_width_():
-    max_width_str = f"max-width: 1400px;"
+    max_width_str = f"max-width: 1000px;"
     st.markdown(
         f"""
     <style>
@@ -33,17 +33,17 @@ def _max_width_():
 
 _max_width_()
 
-c30, c31, c32 = st.columns([2.5, 1, 3])
+c30, c31, c32 = st.columns([2, 1, 2])
 
 with c30:
     # st.image("logo.png", width=400)
-    st.title("🔑 Patent Keyword Extractor")
+    st.title("Patent Keyword Extractor")
     st.header("")
 
 
 
 st.markdown("")
-st.markdown("## **📌 Paste document **")
+st.markdown("## **📌 Paste Patent Text **")
 with st.form(key="my_form"):
 
 
@@ -124,11 +124,11 @@ Note that the *Keyword diversity* slider only works if the *MMR* checkbox is tic
 
     with c2:
         doc = st.text_area(
-            "Paste your text below (max 500 words)",
-            height=510,
+            "Paste your text below (max 4000 words)",
+            height=410,
         )
 
-        MAX_WORDS = 2500
+        MAX_WORDS = 4000
         import re
         res = len(re.findall(r"\w+", doc))
         if res > MAX_WORDS:
@@ -136,7 +136,7 @@ Note that the *Keyword diversity* slider only works if the *MMR* checkbox is tic
                 "⚠️ Your text contains "
                 + str(res)
                 + " words."
-                + " Only the first 2500 words will be reviewed. Stay tuned as increased allowance is coming! 😊"
+                + " Only the first 4000 words will be reviewed. Stay tuned as increased allowance is coming! 😊"
             )
 
             doc = doc[:MAX_WORDS]
@@ -170,11 +170,11 @@ keywords = kw_model.extract_keywords(
     vectorizer=KeyphraseCountVectorizer(),
 )
 
-st.markdown("## **🎈 Check & download results **")
+st.markdown("## **Keyword Extraction Results with Score **")
 
 st.header("")
 
-cs, c1, c2, c3, cLast = st.columns([2, 1.5, 1.5, 1.5, 2])
+cs, c1, c2, c3, cLast = st.columns([1.5, 1.5, 1.5, 1.5, 1.5])
 
 with c1:
     CSVButton2 = download_button(keywords, "Data.csv", "📥 Download (.csv)")
