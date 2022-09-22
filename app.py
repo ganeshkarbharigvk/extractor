@@ -65,8 +65,8 @@ with st.form(key="my_form"):
             help="At present, you can choose between 2 models (Flair or DistilBERT) to embed your text. More to come!",
         )
 
-        if ModelType == "Default (DistilBERT)":
-            # kw_model = KeyBERT(model=roberta)
+        if ModelType == "Default (AI-Growth-Lab/PatentSBERTa)":
+            # kw_model = KeyBERT(model="AI-Growth-Lab/PatentSBERTa")
 
             @st.cache(allow_output_mutation=True)
             def load_model():
